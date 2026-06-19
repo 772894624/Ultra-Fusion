@@ -147,7 +147,7 @@ Open the included RViz layout with:
 ```bash
 rviz -d /opt/ultrafusion/rviz/lio.rviz
 ```
-## 🔥2 Run Ultra-Fusion
+## 2 Run Ultra-Fusion
 ### 🔥2.1 Run Ultra-Fusion on M3DGR
 Download [**M3DGR**](https://github.com/sjtuyinjie/M3DGR) bags and give a star.
 Start ROS and play your bag in the usual ROS way. Use one terminal for
