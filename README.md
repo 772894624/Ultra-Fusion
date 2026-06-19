@@ -152,15 +152,20 @@ Start ROS and play your bag in the usual ROS way. Use one terminal for
 `roscore`, one terminal for `rosbag play`, and one terminal for `uf_node`.
 
 ```bash
-roscore &
-rosbag play /media/path/to/your.bag --clock
+#play your bag
+roscore & rosbag play /media/path/to/your.bag --clock
 ```
 
 Run Ultra-Fusion in another shell:
 
 ```bash
+#default setting
 uf_node m3dgr
+
+#standard LWIO
 uf_node m3dgr_standard
+
+#Stronger vision-coupling
 uf_node m3dgr_image_enhance
 ```
 
