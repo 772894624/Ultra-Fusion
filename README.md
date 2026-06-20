@@ -224,8 +224,49 @@ uf_node /opt/ultrafusion/config/m3dgr/uf_m3dgr_standard.yaml
 </p>
 <p align="center"><em>Trajectory estimation examples on ground, legged, and UAV datasets.</em></p>
 
+### 3.3 Dynamic Demo Results
 
+The following GIFs show representative full-scene reconstructions with the
+current LiDAR cloud and estimated trajectory overlaid during playback.
 
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <img src="images/gifs/arc2_full.gif" alt="GrandTour Arc2 full-scene demo" width="100%">
+      <br>
+      <em>GrandTour Arc2: legged-platform mapping and trajectory recovery through a large arc-shaped route.</em>
+    </td>
+    <td width="50%" align="center">
+      <img src="images/gifs/corridor_full.gif" alt="M3DGR Corridor full-scene demo" width="100%">
+      <br>
+      <em>M3DGR Corridor: stable localization in a visually constrained indoor corridor.</em>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <img src="images/gifs/gnss_denial_full.gif" alt="M3DGR GNSS-denial full-scene demo" width="100%">
+      <br>
+      <em>M3DGR GNSS-denial: continuous estimation when GNSS measurements are unavailable.</em>
+    </td>
+    <td width="50%" align="center">
+      <img src="images/gifs/kaist_full.gif" alt="KAIST full-scene demo" width="100%">
+      <br>
+      <em>KAIST urban driving: large-scale LiDAR mapping with vehicle trajectory visualization.</em>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <img src="images/gifs/longtime02_full.gif" alt="M3DGR Longtime02 full-scene demo" width="100%">
+      <br>
+      <em>M3DGR Longtime02: long-duration operation with consistent map and path alignment.</em>
+    </td>
+    <td width="50%" align="center">
+      <img src="images/gifs/lvig_full.gif" alt="MARS-LVIG full-scene demo" width="100%">
+      <br>
+      <em>MARS-LVIG: aerial LVIO reconstruction with dense point cloud and flight trajectory.</em>
+    </td>
+  </tr>
+</table>
 
 
 ---
@@ -275,4 +316,3 @@ Please also consider citing our previous works related to this project:
 ## 5. Star History 
 
 [![Star History Chart](https://api.star-history.com/svg?repos=sjtuyinjie/Ultra-Fusion&type=Timeline)](https://star-history.com/#Ashutosh00710/github-readme-activity-graph&Timeline)
-
