@@ -4,6 +4,7 @@
 
 [![Website](https://img.shields.io/badge/Website-Ultra--Fusion-blue)](https://sjtuyinjie.github.io/ultrafusion-web/)
 [![Hugging Face](https://img.shields.io/badge/Hugging%20Face-pre--built-ffcc4d)](https://huggingface.co/TianYihong/Ultra-Fusion)
+[![ROS2](https://img.shields.io/badge/ROS2-Humble-22314e)](docs/ros2_humble_m3dgr.md)
 [![arXiv](https://img.shields.io/badge/arXiv-2606.21223-b31b1b)](https://arxiv.org/abs/2606.21223)
 [![Dataset](https://img.shields.io/badge/Dataset-M3DGR-orange)](https://github.com/sjtuyinjie/M3DGR)
 [![Video](https://img.shields.io/badge/Video-Youtube-red)](https://www.youtube.com/watch?v=ekzD9ovd1SQ)
@@ -33,6 +34,7 @@ Within one configurable optimization framework, Ultra-Fusion supports **WIO, VIO
   - [Benchmarks and Findings](#benchmarks-and-findings)
 - [1. Prerequisites & Installation](#1-prerequisites--installation)
   - [Option A — Docker (recommended)](#option-a--docker-install-recommended-)
+  - [Option A2 — ROS2 Humble Docker](#option-a2--ros2-humble-docker)
   - [Option B — Native install](#option-b--native-install)
   - [Installed files](#installed-files)
 - [2. Run on Benchmarks & Your Device](#2-run-on-benchmarks--your-device)
@@ -106,7 +108,8 @@ Reported gains include competitive accuracy and improved localization availabili
 
 ## 1. Prerequisites & Installation
 
-**Tested platform:** Ubuntu 20.04 + ROS Noetic.
+**Tested platform:** Ubuntu 20.04 + ROS Noetic for the paper package. A ROS2
+Humble runtime package is provided for Ubuntu 22.04.
 
 The paper release is v0.1.0. v0.1.1 adds multi-camera support and a reference `visual_life` profile — see [§2.3](#adapt-your-device).
 
@@ -116,6 +119,7 @@ The paper release is v0.1.0. v0.1.1 adds multi-camera support and a reference `v
 | Path | When to use | Summary |
 | --- | --- | --- |
 | **[Option A — Docker](#option-a--docker-install-recommended-)** ⭐ | First-time users, quick demos | Pull runtime image → start container → install `.deb` |
+| **[Option A2 — ROS2 Humble Docker](#option-a2--ros2-humble-docker)** | ROS2 M3DGR playback | Pull/build Humble image → install ROS2 `.deb` → play ROS2 bag |
 | **[Option B — Native](#option-b--native-install)** | Long-term host deployment | Install ROS + deps on host → install `.deb` |
 
 ---
@@ -177,6 +181,53 @@ rviz -d /opt/ultrafusion/rviz/lio.rviz
 ```
 
 Proceed to [§2 Running Ultra-Fusion](#2-run-on-benchmarks--your-device).
+
+---
+
+### Option A2 — ROS2 Humble Docker
+
+The ROS2 release uses Ubuntu 22.04 + ROS2 Humble and keeps the same CMake-based
+Ultra-Fusion runtime. It does not require `colcon build` for users of the
+prebuilt `.deb`.
+
+```bash
+# Docker Hub:
+docker pull maotiandocker/ultrafusion-ros2:0.2.0
+
+# Alibaba Cloud ACR:
+docker pull registry.cn-hangzhou.aliyuncs.com/bit_robot_image/ultrafusion-ros2:0.2.0
+
+# Or build locally:
+docker build -f Dockerfile.ros2 -t ultrafusion-ros2:0.2.0 .
+```
+
+Published digests are recorded in
+[docs/ros2_humble_m3dgr.md](docs/ros2_humble_m3dgr.md).
+
+Start a ROS2 container:
+
+```bash
+xhost +local:docker
+
+docker run --rm -it --net=host --ipc=host \
+  -e DISPLAY="${DISPLAY}" \
+  -e QT_X11_NO_MITSHM=1 \
+  -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+  -v /media:/media:ro \
+  -v "$(pwd)":/workspace \
+  maotiandocker/ultrafusion-ros2:0.2.0
+```
+
+Install the ROS2 release package:
+
+```bash
+cd /workspace
+./scripts/install_ultrafusion_ros2_deb.sh
+source /opt/ros/humble/setup.bash
+```
+
+ROS2 M3DGR conversion and replay instructions are in
+[docs/ros2_humble_m3dgr.md](docs/ros2_humble_m3dgr.md).
 
 ---
 
@@ -303,6 +354,44 @@ uf_node m3dgr                  # default (= m3dgr_standard)
     </td>
   </tr>
 </table>
+
+#### M3DGR on ROS2 Humble
+
+For the ROS2 release, convert the ROS1 M3DGR bag to a ROS2 bag with common
+topics first:
+
+```bash
+python3 -m pip install --user rosbags
+
+python3 scripts/convert_m3dgr_ros1_to_ros2_common.py \
+  --src /media/path/to/M3DGR/Grass01.bag \
+  --dst /tmp/grass01_20s_ros2 \
+  --duration 20 \
+  --overwrite
+```
+
+Then run ROS2 playback:
+
+```bash
+source /opt/ros/humble/setup.bash
+uf_node /opt/ultrafusion/config/m3dgr/uf_m3dgr_ros2_lvwio.yaml
+```
+
+```bash
+source /opt/ros/humble/setup.bash
+ros2 bag play /tmp/grass01_20s_ros2 --clock
+```
+
+Open the ROS2 RViz layout and verify live map/path topics:
+
+```bash
+rviz2 -d /opt/ultrafusion/rviz/lio_ros2.rviz
+ros2 topic echo /curr_cloud --once --field width
+ros2 topic echo /result_lidar_path --once --field header.frame_id
+```
+
+See [docs/ros2_humble_m3dgr.md](docs/ros2_humble_m3dgr.md) for the ROS2 Docker
+image, `.deb`, Docker Hub/ACR release tags, and full-bag conversion commands.
 
 ### 2.2 Other datasets
 

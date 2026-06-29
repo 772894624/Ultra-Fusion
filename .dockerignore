@@ -9,3 +9,7 @@ devel
 logs
 tmp
 *.bag
+*.db3
+*.mcap
+ros2_bags
+output
